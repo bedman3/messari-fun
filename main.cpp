@@ -32,7 +32,7 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
     bool isBuy;
     int jsonStrLen = json.length();
     std::string key, value;
-    for (uint i = 0, j = 0; i < jsonStrLen; ++i) {
+    for (int i = 0, j = 0; i < jsonStrLen; ++i) {
         if (json[i] == '\"') {
             // start checking the pos of the end quote
             j = i + 1;

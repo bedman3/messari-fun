@@ -2,6 +2,7 @@
 *.bin
 *.log
 callgrind.out*
+messari
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
