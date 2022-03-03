@@ -1,6 +1,5 @@
 #include <iostream>
 #include <unordered_map>
-#include <ctime>
 #include <set>
 #include <unistd.h>
 
@@ -33,7 +32,7 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
     bool isBuy;
     uint jsonStrLen = json.length();
     std::string key, value;
-    for (int i = 0, j = 0; i < jsonStrLen; ++i) {
+    for (uint i = 0, j = 0; i < jsonStrLen; ++i) {
         if (json[i] == '\"') {
             // get value after the first quote
             // start checking the pos of the end quote
@@ -85,12 +84,8 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
 
 int main() {
     std::string buf;
-//    std::clock_t start_t = std::clock();
-//    double duration;
     double data[MAX_MARKET][NUM_OF_PARAM];
     std::set<uint16_t> active_market_set;
-
-//    int runCount = 0;
 
     char *cbuf = nullptr;
     size_t len;
@@ -100,21 +95,15 @@ int main() {
         while (getline(&cbuf, &len, stdin) != -1) {
             buf = cbuf;
             if (buf == "END") break;
-//            runCount += 1;
 
+            // read json string line into numeric value and parse
             extractInfoFromJson(buf, data, active_market_set);
-
-            /*if (runCount % 100000 == 0) {
-                std::cout << "runCount: " << runCount << std::endl;
-                duration = (std::clock() - start_t) / (double) CLOCKS_PER_SEC;
-                std::cout << "Operation took " << duration << " seconds" << std::endl;
-            }*/
         }
     }
 
+    // output result in json format
     double totalVol, meanPrice, meanVol, VWAP, percentageBuy, totalCount;
     for (std::set<uint16_t>::const_iterator it = active_market_set.begin(); it != active_market_set.end(); ++it) {
-
         totalCount = data[*it][MarketInfo::TotalCount];
         totalVol = data[*it][MarketInfo::TotalVol];
         meanPrice = data[*it][MarketInfo::TotalPrice] / totalCount;
