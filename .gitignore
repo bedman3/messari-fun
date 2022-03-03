@@ -1,6 +1,7 @@
 .idea/
 *.bin
-output.txt
+*.txt
+callgrind.out*
 CMakeLists.txt.user
 CMakeCache.txt
 CMakeFiles
@@ -14,7 +15,7 @@ CTestTestfile.cmake
 _deps
 cmake-build-debug
 inc/
-test_output.txt
+
 
 # Prerequisites
 *.d
