@@ -3,7 +3,6 @@
 #include <set>
 #include <unistd.h>
 #include <boost/spirit/home/qi.hpp>
-#include <boost/spirit/home/x3.hpp>
 
 #ifdef DEBUG
 #include <ctime>
@@ -54,7 +53,7 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
             while (!(json[j] == ',' || json[j] == '}')) ++j;
             value = json.substr(i+1, j - i - 1);
 
-            char c,c1;
+            // after getting the value in string value, convert the respective value in string format to their numeric value
             try {
                 switch (keyHash[key]) {
                     case 1:
