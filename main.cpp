@@ -44,6 +44,7 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
             j = i + 1;
             while (json[j] != '\"') ++j;
             key = json.substr(i+1, j - i - 1);
+            // update the ptr to the last scanned location
             i = j;
         }
         else if (json[i] == ':') {
@@ -77,10 +78,12 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
             } catch (std::exception &error) {
                 std::cerr << error.what() << std::endl;
             }
+            // update the ptr to the last scanned location
             i = j;
         }
     }
 
+    // record which market is active so we don't print all unused market id
     active_market_set.insert(market);
     data[market][MarketInfo::TotalVol] += vol;
     data[market][MarketInfo::TotalPrice] += price;
