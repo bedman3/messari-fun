@@ -2,6 +2,12 @@
 #include <unordered_map>
 #include <set>
 #include <unistd.h>
+#include <boost/spirit/home/qi.hpp>
+#include <boost/spirit/home/x3.hpp>
+
+#ifdef DEBUG
+#include <ctime>
+#endif
 
 #define MAX_MARKET 15000
 #define NUM_OF_PARAM 5
@@ -56,11 +62,11 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
                         break;
                     case 2:
                         // price
-                        price = std::stod(value);
+                        boost::spirit::qi::parse(&json[i+1], &json[j], boost::spirit::qi::double_, price);
                         break;
                     case 3:
                         // vol
-                        vol = std::stod(value);
+                        boost::spirit::qi::parse(&json[i+1], &json[j], boost::spirit::qi::double_, vol);
                         break;
                     case 4:
                         // isBuy
@@ -87,6 +93,12 @@ int main() {
     double data[MAX_MARKET][NUM_OF_PARAM];
     std::set<uint16_t> active_market_set;
 
+#ifdef DEBUG
+    std::clock_t start_t = std::clock();
+    int runCount = 0;
+    double duration;
+#endif
+
     char *cbuf = nullptr;
     size_t len;
 
@@ -95,9 +107,20 @@ int main() {
         while (getline(&cbuf, &len, stdin) != -1) {
             buf = cbuf;
             if (buf == "END") break;
+#ifdef DEBUG
+            runCount += 1;
+#endif
 
             // read json string line into numeric value and parse
             extractInfoFromJson(buf, data, active_market_set);
+
+#ifdef DEBUG
+            if (runCount % 100000 == 0) {
+                std::cout << "runCount: " << runCount << std::endl;
+                duration = (std::clock() - start_t) / (double) CLOCKS_PER_SEC;
+                std::cout << "Operation took " << duration << " seconds" << std::endl;
+            }
+#endif
         }
     }
 
