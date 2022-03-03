@@ -31,10 +31,11 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
     uint16_t market;
     double vol, price;
     bool isBuy;
-    int jsonStrLen = json.length();
+    uint jsonStrLen = json.length();
     std::string key, value;
     for (int i = 0, j = 0; i < jsonStrLen; ++i) {
         if (json[i] == '\"') {
+            // get value after the first quote
             // start checking the pos of the end quote
             j = i + 1;
             while (json[j] != '\"') ++j;
@@ -42,6 +43,7 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
             i = j;
         }
         else if (json[i] == ':') {
+            // get value after the colon
             // start getting the value of the key
             j = i + 1;
             while (!(json[j] == ',' || json[j] == '}')) ++j;
@@ -108,7 +110,6 @@ int main() {
             }
         }
     }
-
 
     double totalVol, meanPrice, meanVol, VWAP, percentageBuy, totalCount;
     for (std::set<uint16_t>::const_iterator it = active_market_set.begin(); it != active_market_set.end(); ++it) {
