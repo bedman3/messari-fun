@@ -84,7 +84,6 @@ int main() {
     std::string buf;
     std::clock_t start_t = std::clock();
     double duration, data[MAX_MARKET][NUM_OF_PARAM];
-    memset(data, 0, sizeof(data));
     std::set<uint16_t> active_market_set;
 
     int runCount = 0;

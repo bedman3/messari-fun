@@ -1,6 +1,6 @@
 .idea/
 *.bin
-*.txt
+*.log
 callgrind.out*
 CMakeLists.txt.user
 CMakeCache.txt
