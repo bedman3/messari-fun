@@ -53,7 +53,8 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
             j = i + 1;
             while (!(json[j] == ',' || json[j] == '}')) ++j;
             value = json.substr(i+1, j - i - 1);
-            i = j;
+
+            char c,c1;
             try {
                 switch (keyHash[key]) {
                     case 1:
@@ -62,11 +63,11 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
                         break;
                     case 2:
                         // price
-                        boost::spirit::qi::parse(&json[i+1], &json[j], boost::spirit::qi::double_, price);
+                        boost::spirit::qi::parse(&json[i+1], &json[j-1], boost::spirit::qi::double_, price);
                         break;
                     case 3:
                         // vol
-                        boost::spirit::qi::parse(&json[i+1], &json[j], boost::spirit::qi::double_, vol);
+                        boost::spirit::qi::parse(&json[i+1], &json[j-1], boost::spirit::qi::double_, vol);
                         break;
                     case 4:
                         // isBuy
@@ -77,6 +78,7 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
             } catch (std::exception &error) {
                 std::cerr << error.what() << std::endl;
             }
+            i = j;
         }
     }
 
@@ -102,25 +104,31 @@ int main() {
     char *cbuf = nullptr;
     size_t len;
 
-    std::cin >> buf;
-    if (buf == "BEGIN") {
-        while (getline(&cbuf, &len, stdin) != -1) {
-            buf = cbuf;
-            if (buf == "END") break;
+    while (getline(&cbuf, &len, stdin) != -1) {
+        cbuf[strcspn(cbuf, "\n")] = 0;
+        buf = cbuf;
+        if (buf == "BEGIN") {
+            while (getline(&cbuf, &len, stdin) != -1) {
+                cbuf[strcspn(cbuf, "\n")] = 0;
+                buf = cbuf;
+                if (buf == "END") break;
+
 #ifdef DEBUG
-            runCount += 1;
+                runCount += 1;
 #endif
 
-            // read json string line into numeric value and parse
-            extractInfoFromJson(buf, data, active_market_set);
+                // read json string line into numeric value and parse
+                extractInfoFromJson(buf, data, active_market_set);
 
 #ifdef DEBUG
-            if (runCount % 100000 == 0) {
-                std::cout << "runCount: " << runCount << std::endl;
-                duration = (std::clock() - start_t) / (double) CLOCKS_PER_SEC;
-                std::cout << "Operation took " << duration << " seconds" << std::endl;
+                if (runCount % 100000 == 0) {
+                    std::cout << "runCount: " << runCount << std::endl;
+                    duration = (std::clock() - start_t) / (double) CLOCKS_PER_SEC;
+                    std::cout << "Operation took " << duration << " seconds" << std::endl;
+                }
+#endif
             }
-#endif
+            break;
         }
     }
 
