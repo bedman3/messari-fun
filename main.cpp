@@ -2,6 +2,7 @@
 #include <unordered_map>
 #include <ctime>
 #include <set>
+#include <unistd.h>
 
 #define MAX_MARKET 15000
 #define NUM_OF_PARAM 5
@@ -87,9 +88,14 @@ int main() {
     std::set<uint16_t> active_market_set;
 
     int runCount = 0;
+
+    char *cbuf = nullptr;
+    size_t len;
+
     std::cin >> buf;
     if (buf == "BEGIN") {
-        while (std::cin >> buf) {
+        while (getline(&cbuf, &len, stdin) != -1) {
+            buf = cbuf;
             if (buf == "END") break;
             runCount += 1;
 
@@ -102,6 +108,7 @@ int main() {
             }
         }
     }
+
 
     double totalVol, meanPrice, meanVol, VWAP, percentageBuy, totalCount;
     for (std::set<uint16_t>::const_iterator it = active_market_set.begin(); it != active_market_set.end(); ++it) {
