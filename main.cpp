@@ -31,7 +31,7 @@ enum MarketInfo {
     TotalCount
 };
 
-void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF_PARAM], std::set<uint16_t> &active_market_set) {
+void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF_PARAM], std::set<uint16_t> &activeMarketSet) {
     uint16_t market;
     double vol, price;
     bool isBuy;
@@ -84,7 +84,7 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
     }
 
     // record which market is active so we don't print all unused market id
-    active_market_set.insert(market);
+    activeMarketSet.insert(market);
     data[market][MarketInfo::TotalVol] += vol;
     data[market][MarketInfo::TotalPrice] += price;
     data[market][MarketInfo::TotalPriceMultiplyVol] += vol * price;
@@ -95,7 +95,7 @@ void extractInfoFromJson(const std::string &json, double data[MAX_MARKET][NUM_OF
 int main() {
     std::string buf;
     double data[MAX_MARKET][NUM_OF_PARAM];
-    std::set<uint16_t> active_market_set;
+    std::set<uint16_t> activeMarketSet;
 
 #ifdef DEBUG
     std::clock_t start_t = std::clock();
@@ -120,7 +120,7 @@ int main() {
 #endif
 
                 // read json string line into numeric value and parse
-                extractInfoFromJson(buf, data, active_market_set);
+                extractInfoFromJson(buf, data, activeMarketSet);
 
 #ifdef DEBUG
                 if (runCount % 100000 == 0) {
@@ -136,7 +136,7 @@ int main() {
 
     // output result in json format
     double totalVol, meanPrice, meanVol, VWAP, percentageBuy, totalCount;
-    for (std::set<uint16_t>::const_iterator it = active_market_set.begin(); it != active_market_set.end(); ++it) {
+    for (std::set<uint16_t>::const_iterator it = activeMarketSet.begin(); it != activeMarketSet.end(); ++it) {
         totalCount = data[*it][MarketInfo::TotalCount];
         totalVol = data[*it][MarketInfo::TotalVol];
         meanPrice = data[*it][MarketInfo::TotalPrice] / totalCount;
